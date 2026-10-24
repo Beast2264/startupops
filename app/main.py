@@ -1,6 +1,6 @@
 """FastAPI application for StartupOps (local-first MVP).
 
-Server-rendered HTML (Jinja2) + minimal JS. Private/internal utility.
+Server-rendered HTML (Jinja2) + minimal JS. Runs locally by default.
 Run locally, loopback only:  uvicorn app.main:app --host 127.0.0.1 --port 8000
 
 Catalog vs. submissions: Programs is the catalog; Applications are actual
