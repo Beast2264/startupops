@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}{{ application.program }} — StartupOps{% endblock %}
+{% block content %}
+<div class="pagehead">
+  <h1>{{ application.provider }} — {{ application.program }}</h1>
+  <a class="btn" href="/applications/{{ application.id }}/edit">Edit</a>
+</div>
+
+<div class="badges">
+  <span class="chip">{{ application.status.value }}</span>
+  {% if program %}<a class="chip tier" href="/programs/{{ program.id }}">Program: {{ program.name }}</a>{% endif %}
+</div>
+
+<div class="grid2">
+  <div class="panel">
+    <h2>Submission</h2>
+    <table class="kv">
+      <tr><th>Program reference</th><td>
+        {% if program %}<a href="/programs/{{ program.id }}">{{ program.provider }} — {{ program.name }}</a>
+        {% else %}<span class="muted">{{ application.program_id }}</span>{% endif %}
+      </td></tr>
+      <tr><th>Reference no.</th><td>{{ application.reference or "—" }}</td></tr>
+      <tr><th>Confirmation</th><td>{{ application.confirmation or "—" }}</td></tr>
+      <tr><th>Started</th><td>{{ application.date_started or "—" }}</td></tr>
+      <tr><th>Submitted</th><td>{{ application.date_submitted or "—" }}</td></tr>
+      <tr><th>Decision</th><td>{{ application.decision_date or "—" }}</td></tr>
+      <tr><th>Next action</th><td>{{ application.next_action or "—" }}{% if application.next_action_date %} ({{ application.next_action_date }}){% endif %}</td></tr>
+    </table>
+  </div>
+
+  <div class="panel">
+    <h2>Award</h2>
+    <table class="kv">
+      <tr><th>Actual award</th><td>
+        {% if application.actual_award is not none %}${{ "%.2f"|format(application.actual_award) }} {{ application.currency }}
+        {% else %}<span class="muted">— (no approval recorded)</span>{% endif %}
+      </td></tr>
+      {% if program %}
+      <tr><th>Advertised maximum (program)</th><td>
+        {% if program.advertised_maximum is not none %}${{ "%.2f"|format(program.advertised_maximum) }}
+        {% else %}<span class="muted">{{ program.advertised_maximum_text or "—" }}</span>{% endif %}
+      </td></tr>
+      {% endif %}
+    </table>
+    <p class="hint">Advertised maximum (on the program) is marketing; actual award appears only after approval.</p>
+    <table class="kv">
+      <tr><th>Contact</th><td>{{ application.contact or "—" }}</td></tr>
+      <tr><th>Evidence / confirmation link</th><td>
+        {% set cl = application.confirmation_link|safe_url %}
+        {% if cl %}<a href="{{ cl }}" target="_blank" rel="noopener noreferrer">{{ cl }}</a>{% else %}—{% endif %}
+      </td></tr>
+      <tr><th>Notes</th><td>{{ application.notes or "—" }}</td></tr>
+    </table>
+  </div>
+</div>
+
+<p><a href="/applications">&larr; Back to applications</a></p>
+{% endblock %}

@@ -1,0 +1,20 @@
+# StartupOps — local-first MVP dependencies
+# Boring, minimal. No React/Next/K8s/Redis/Celery/Kafka.
+# Pinned to versions resolved with prebuilt wheels for the local Python.
+fastapi==0.141.1
+starlette==1.6.0
+uvicorn==0.52.3
+jinja2==3.1.6
+python-multipart==0.0.32
+pydantic==2.13.4
+
+# OPTIONAL: Firestore persistence (used only by app.firestore_repo, only when
+# STARTUPOPS_DATA_BACKEND=firestore). Not required to run the app locally —
+# the default in-memory backend has no dependency on this package or on any
+# Google Cloud project. Local dev/tests can use the Firestore emulator
+# instead of a real GCP project (no GCP connection required for that).
+google-cloud-firestore==2.28.1
+
+# Test-only
+pytest==9.1.1
+httpx==0.28.1

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% set a = application %}
+{% block title %}{{ "Edit" if a else "New" }} application — StartupOps{% endblock %}
+{% block content %}
+<h1>{{ "Edit" if a else "Record" }} application (submission)</h1>
+{% if errors %}<div class="error">Could not save: {{ errors }}</div>{% endif %}
+
+<form method="post" action="{{ form_action }}" class="form">
+  <fieldset>
+    <legend>Program</legend>
+    <label>Program* (from catalog)
+      <select name="program_id" required>
+        <option value="">— select a program —</option>
+        {% for p in programs %}
+        <option value="{{ p.id }}" {% if a and a.program_id==p.id %}selected{% endif %}>{{ p.provider }} — {{ p.name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <p class="hint">Provider and program name are taken from the selected catalog program.</p>
+  </fieldset>
+
+  <fieldset>
+    <legend>Submission</legend>
+    <label>Status
+      <select name="status">
+        {% for s in statuses %}<option value="{{ s.value }}" {% if a and a.status==s %}selected{% endif %}>{{ s.value }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Reference no. <input name="reference" value="{{ a.reference if a and a.reference else '' }}"></label>
+    <label>Confirmation <input name="confirmation" value="{{ a.confirmation if a and a.confirmation else '' }}"></label>
+    <label>Date started <input name="date_started" type="date" value="{{ a.date_started if a and a.date_started else '' }}"></label>
+    <label>Date submitted <input name="date_submitted" type="date" value="{{ a.date_submitted if a and a.date_submitted else '' }}"></label>
+    <label>Decision date <input name="decision_date" type="date" value="{{ a.decision_date if a and a.decision_date else '' }}"></label>
+    <label>Next action <input name="next_action" value="{{ a.next_action if a and a.next_action else '' }}"></label>
+    <label>Next-action date <input name="next_action_date" type="date" value="{{ a.next_action_date if a and a.next_action_date else '' }}"></label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Award (only if APPROVED / PARTIALLY_APPROVED)</legend>
+    <label>Actual award (number)
+      <input name="actual_award" type="number" step="0.01" value="{{ a.actual_award if a and a.actual_award is not none else '' }}"></label>
+    <label>Currency <input name="currency" value="{{ a.currency if a else 'USD' }}"></label>
+    <label>Confirmation / evidence link <input name="confirmation_link" value="{{ a.confirmation_link if a and a.confirmation_link else '' }}"></label>
+    <label>Contact <input name="contact" value="{{ a.contact if a and a.contact else '' }}"></label>
+    <label>Notes <textarea name="notes" rows="3">{{ a.notes if a and a.notes else '' }}</textarea></label>
+    <p class="hint">An advertised maximum is not an award. Do not paste credentials — links only.</p>
+  </fieldset>
+
+  <div class="actions">
+    <button class="btn" type="submit">Save</button>
+    <a class="btn ghost" href="{{ '/applications/' ~ a.id if a else '/applications' }}">Cancel</a>
+  </div>
+</form>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}New credit — StartupOps{% endblock %}
+{% block content %}
+<h1>New credit / benefit</h1>
+{% if errors %}<div class="error">Could not save: {{ errors }}</div>{% endif %}
+
+<form method="post" action="/credits" class="form">
+  <fieldset>
+    <legend>Benefit</legend>
+    <label>Provider / program* <input name="provider_program" required></label>
+    <label>Benefit type
+      <select name="benefit_type">
+        {% for b in benefit_types %}<option value="{{ b.value }}">{{ b.value }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Advertised maximum (number) <input name="advertised_maximum" type="number" step="0.01"></label>
+    <label>Advertised maximum text <input name="advertised_maximum_text" placeholder="UNVERIFIED / NOT PUBLICLY DISCLOSED"></label>
+    <label>Actual award (number) <input name="actual_award" type="number" step="0.01"></label>
+    <label>Currency <input name="currency" value="USD"></label>
+    <label>Amount used <input name="amount_used" type="number" step="0.01" value="0"></label>
+  </fieldset>
+  <fieldset>
+    <legend>Dates & terms</legend>
+    <label>Activation date <input name="activation_date" type="date"></label>
+    <label>Expiration date <input name="expiration_date" type="date"></label>
+    <label>Workload / use assignment <input name="workload_assignment"></label>
+    <label>Restrictions <input name="restrictions"></label>
+    <label>Evidence link <input name="evidence_link"></label>
+    <label>Notes <textarea name="notes" rows="3"></textarea></label>
+    <p class="hint">Remaining is computed as actual award − amount used. Do not store credentials.</p>
+  </fieldset>
+  <div class="actions">
+    <button class="btn" type="submit">Save</button>
+    <a class="btn ghost" href="/credits">Cancel</a>
+  </div>
+</form>
+{% endblock %}

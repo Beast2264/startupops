@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}{{ program.name }} — StartupOps{% endblock %}
+{% block content %}
+<div class="pagehead">
+  <h1>{{ program.provider }} — {{ program.name }}</h1>
+  <a class="btn" href="/programs/{{ program.id }}/edit">Edit</a>
+</div>
+
+<div class="badges">
+  <span class="chip tier">{{ program.tier.value }}</span>
+  <span class="chip">{{ program.status.value }}</span>
+  <span class="chip">Priority: {{ program.priority.value }}</span>
+  <span class="chip">{{ program.benefit_type.value }}</span>
+</div>
+
+<div class="grid2">
+  <div class="panel">
+    <h2>Value (advertised)</h2>
+    <table class="kv">
+      <tr><th>Value disclosure</th><td><span class="chip">{{ program.value_disclosure.value }}</span></td></tr>
+      <tr><th>Advertised maximum</th><td>
+        {% if program.advertised_maximum is not none %}${{ "%.2f"|format(program.advertised_maximum) }} {{ program.currency }}
+        {% else %}<span class="muted">{{ program.advertised_maximum_text or "—" }}</span>{% endif %}
+      </td></tr>
+    </table>
+    <p class="hint">Advertised maximum is marketing, not an award. Actual awards are recorded on an application after approval.</p>
+  </div>
+  <div class="panel">
+    <h2>Eligibility</h2>
+    <table class="kv">
+      <tr><th>Summary</th><td>{{ program.eligibility_summary or "—" }}</td></tr>
+      <tr><th>Referral required</th><td>{{ "Yes" if program.referral_requirement else "No" }}</td></tr>
+      <tr><th>Funding required</th><td>{{ "Yes" if program.funding_requirement else "No" }}</td></tr>
+      <tr><th>Bootstrapped eligible</th><td>{{ "Yes" if program.bootstrapped_eligibility else "No" }}</td></tr>
+      <tr><th>Existing-customer eligible</th><td>{{ "Yes" if program.existing_customer_eligibility else "No" }}</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="grid2">
+  <div class="panel">
+    <h2>Details</h2>
+    <table class="kv">
+      <tr><th>Identified</th><td>{{ program.date_identified or "—" }}</td></tr>
+      <tr><th>Application deadline</th><td>{{ program.application_deadline or "—" }}</td></tr>
+      <tr><th>Primary intended use</th><td>{{ program.primary_intended_use or "—" }}</td></tr>
+      <tr><th>Architecture impact</th><td>{{ program.architecture_impact or "—" }}</td></tr>
+      <tr><th>Contact</th><td>{{ program.contact or "—" }}</td></tr>
+      <tr><th>Notes</th><td>{{ program.notes or "—" }}</td></tr>
+    </table>
+  </div>
+  <div class="panel">
+    <h2>Links</h2>
+    <table class="kv">
+      <tr><th>Official URL</th><td>
+        {% set ou = program.official_url|safe_url %}
+        {% if ou %}<a href="{{ ou }}" target="_blank" rel="noopener noreferrer">{{ ou }}</a>{% else %}—{% endif %}
+      </td></tr>
+      <tr><th>Application URL</th><td>
+        {% set au = program.application_url|safe_url %}
+        {% if au %}<a href="{{ au }}" target="_blank" rel="noopener noreferrer">{{ au }}</a>{% else %}—{% endif %}
+      </td></tr>
+    </table>
+  </div>
+</div>
+
+<section class="panel">
+  <div class="pagehead">
+    <h2>Applications to this program</h2>
+    <a class="btn ghost" href="/applications/new">+ Record submission</a>
+  </div>
+  {% if applications %}
+  <table class="data">
+    <thead><tr><th>Status</th><th>Reference</th><th>Submitted</th><th>Actual award</th></tr></thead>
+    <tbody>
+      {% for a in applications %}
+      <tr>
+        <td><a href="/applications/{{ a.id }}"><span class="chip">{{ a.status.value }}</span></a></td>
+        <td>{{ a.reference or "—" }}</td>
+        <td>{{ a.date_submitted or "—" }}</td>
+        <td>{% if a.actual_award is not none %}${{ "%.2f"|format(a.actual_award) }}{% else %}<span class="muted">—</span>{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="muted">No application submitted for this program yet.</p>
+  {% endif %}
+</section>
+
+<p><a href="/programs">&larr; Back to catalog</a></p>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Credits — StartupOps{% endblock %}
+{% block content %}
+<div class="pagehead">
+  <h1>Credits</h1>
+  <a class="btn" href="/credits/new">+ New credit</a>
+</div>
+<p class="hint">Remaining is computed from <strong>actual award</strong> minus amount used — never from an advertised maximum.</p>
+
+<table class="data">
+  <thead>
+    <tr><th>Provider / program</th><th>Type</th><th>Advertised max</th><th>Actual award</th><th>Used</th><th>Remaining</th><th>% left</th><th>Expires</th><th>Days</th></tr>
+  </thead>
+  <tbody>
+    {% for v in credit_views %}
+    {% set c = v.credit %}
+    <tr>
+      <td>{{ c.provider_program }}</td>
+      <td>{{ c.benefit_type.value }}</td>
+      <td>{% if c.advertised_maximum is not none %}${{ "%.0f"|format(c.advertised_maximum) }}{% else %}<span class="muted">{{ c.advertised_maximum_text or "—" }}</span>{% endif %}</td>
+      <td>{% if c.actual_award is not none %}${{ "%.2f"|format(c.actual_award) }}{% else %}<span class="muted">—</span>{% endif %}</td>
+      <td>${{ "%.2f"|format(c.amount_used) }}</td>
+      <td>{% if v.remaining is not none %}${{ "%.2f"|format(v.remaining) }}{% else %}<span class="muted">—</span>{% endif %}</td>
+      <td>{% if v.percentage_remaining is not none %}{{ v.percentage_remaining }}%{% else %}<span class="muted">—</span>{% endif %}</td>
+      <td>{{ c.expiration_date or "—" }}</td>
+      <td>
+        {% if v.expiration_bucket == "EXPIRED" %}<span class="chip bad">EXPIRED</span>
+        {% elif v.days_until_expiration is not none %}
+          <span class="chip {% if v.days_until_expiration <= 30 %}warn{% endif %}">{{ v.days_until_expiration }}d</span>
+        {% else %}—{% endif %}
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="9" class="muted">No credit records yet. Credits appear once an award is recorded.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Applications — StartupOps{% endblock %}
+{% block content %}
+<div class="pagehead">
+  <h1>Applications (submissions)</h1>
+  <a class="btn" href="/applications/new">+ Record submission</a>
+</div>
+<p class="hint">Actual submissions we have made. Programs we are merely tracking live in the <a href="/programs">catalog</a>.</p>
+
+<form class="filters" method="get" action="/applications">
+  <label>Status
+    <select name="status">
+      <option value="">All</option>
+      {% for s in statuses %}<option value="{{ s.value }}" {% if f_status==s.value %}selected{% endif %}>{{ s.value }}</option>{% endfor %}
+    </select>
+  </label>
+  <label>Provider
+    <input type="text" name="provider" value="{{ f_provider }}" placeholder="contains…">
+  </label>
+  <button class="btn" type="submit">Filter</button>
+  <a class="btn ghost" href="/applications">Reset</a>
+</form>
+
+<table class="data">
+  <thead>
+    <tr><th>Provider</th><th>Program</th><th>Status</th><th>Reference</th><th>Confirmation</th><th>Submitted</th><th>Actual award</th></tr>
+  </thead>
+  <tbody>
+    {% for a in applications %}
+    <tr>
+      <td>{{ a.provider }}</td>
+      <td><a href="/applications/{{ a.id }}">{{ a.program }}</a></td>
+      <td><span class="chip">{{ a.status.value }}</span></td>
+      <td>{{ a.reference or "—" }}</td>
+      <td>{{ a.confirmation or "—" }}</td>
+      <td>{{ a.date_submitted or "—" }}</td>
+      <td>{% if a.actual_award is not none %}${{ "%.0f"|format(a.actual_award) }}{% else %}<span class="muted">—</span>{% endif %}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="7" class="muted">No applications submitted yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+<p class="muted">{{ applications|length }} shown.</p>
+{% endblock %}

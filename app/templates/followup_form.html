@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}New follow-up — StartupOps{% endblock %}
+{% block content %}
+<h1>New follow-up</h1>
+{% if errors %}<div class="error">Could not save: {{ errors }}</div>{% endif %}
+
+<form method="post" action="/followups" class="form">
+  <fieldset>
+    <legend>Follow-up</legend>
+    <label>Provider / program* <input name="provider_program" required></label>
+    <label>Status
+      <select name="status">
+        {% for s in statuses %}<option value="{{ s.value }}">{{ s.value }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Priority
+      <select name="priority">
+        {% for p in priorities %}<option value="{{ p.value }}">{{ p.value }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Last contact <input name="last_contact" type="date"></label>
+    <label>Next follow-up <input name="next_followup" type="date"></label>
+    <label>Action <input name="action"></label>
+    <label class="chk"><input type="checkbox" name="completed"> Completed</label>
+    <label>Notes <textarea name="notes" rows="3"></textarea></label>
+  </fieldset>
+  <div class="actions">
+    <button class="btn" type="submit">Save</button>
+    <a class="btn ghost" href="/followups">Cancel</a>
+  </div>
+</form>
+{% endblock %}

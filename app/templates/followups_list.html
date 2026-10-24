@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Follow-ups — StartupOps{% endblock %}
+{% block content %}
+<div class="pagehead">
+  <h1>Follow-ups</h1>
+  <a class="btn" href="/followups/new">+ New follow-up</a>
+</div>
+
+<table class="data">
+  <thead>
+    <tr><th>Provider / program</th><th>Status</th><th>Last contact</th><th>Next follow-up</th><th>Days until</th><th>Action</th><th>Priority</th><th>Done</th></tr>
+  </thead>
+  <tbody>
+    {% for v in followup_views %}
+    {% set f = v.followup %}
+    <tr class="{% if v.overdue %}row-overdue{% endif %}">
+      <td>{{ f.provider_program }}</td>
+      <td><span class="chip">{{ f.status.value }}</span></td>
+      <td>{{ f.last_contact or "—" }}</td>
+      <td>{{ f.next_followup or "—" }}</td>
+      <td>
+        {% if v.days_until_followup is none %}—
+        {% elif v.days_until_followup < 0 %}<span class="chip bad">{{ v.days_until_followup }}d (overdue)</span>
+        {% elif v.days_until_followup <= 7 %}<span class="chip warn">{{ v.days_until_followup }}d</span>
+        {% else %}{{ v.days_until_followup }}d{% endif %}
+      </td>
+      <td>{{ f.action or "—" }}</td>
+      <td>{{ f.priority.value }}</td>
+      <td>{{ "✓" if f.completed else "" }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="8" class="muted">No follow-ups yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

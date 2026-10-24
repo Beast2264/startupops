@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — StartupOps{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+<p class="muted">Snapshot as of {{ today }}.</p>
+
+<section class="cards">
+  <div class="card"><div class="num">{{ summary.programs_tracked }}</div><div class="lbl">Programs tracked</div></div>
+  <div class="card"><div class="num">{{ summary.applications_count }}</div><div class="lbl">Applications submitted</div></div>
+  <div class="card"><div class="num">{{ summary.ready_to_apply }}</div><div class="lbl">Ready to apply</div></div>
+  <div class="card"><div class="num">{{ summary.submitted }}</div><div class="lbl">Submitted</div></div>
+  <div class="card"><div class="num">{{ summary.under_review }}</div><div class="lbl">Under review</div></div>
+  <div class="card ok"><div class="num">{{ summary.approved }}</div><div class="lbl">Approved</div></div>
+  <div class="card bad"><div class="num">{{ summary.rejected_or_not_eligible }}</div><div class="lbl">Rejected / not eligible</div></div>
+  <div class="card"><div class="num">{{ summary.followups_due }}</div><div class="lbl">Follow-ups due</div></div>
+</section>
+<p class="hint">Programs tracked counts the catalog. Submitted / under review / approved count actual applications.</p>
+
+<section class="grid2">
+  <div class="panel">
+    <h2>Financials</h2>
+    <table class="kv">
+      <tr><th>Verified advertised value</th><td>
+        {% for cur, amt in summary.verified_value_by_currency.items() %}
+          {{ cur }} {{ "%.0f"|format(amt) }}{% if not loop.last %}; {% endif %}
+        {% else %}<span class="muted">—</span>{% endfor %}
+      </td></tr>
+      <tr><th>Conditional ceilings (not guaranteed)</th><td>
+        {% for cur, amt in summary.conditional_ceiling_by_currency.items() %}
+          {{ cur }} {{ "%.0f"|format(amt) }}{% if not loop.last %}; {% endif %}
+        {% else %}<span class="muted">—</span>{% endfor %}
+      </td></tr>
+      <tr><th>Total actual awards</th><td>${{ "%.2f"|format(summary.total_actual_awards) }}</td></tr>
+    </table>
+    <p class="hint">Verified = firm advertised figures only, per currency (not summed across currencies). Conditional ceilings are advertised maximums that are not guaranteed. Undisclosed/variable values are excluded. Actual awards only exist on approved records.</p>
+  </div>
+
+  <div class="panel">
+    <h2>Credits expiring</h2>
+    <table class="kv">
+      <tr><th>Within 30 days</th><td>{{ summary.credits_expiring_30 }}</td></tr>
+      <tr><th>Within 60 days</th><td>{{ summary.credits_expiring_60 }}</td></tr>
+      <tr><th>Within 90 days</th><td>{{ summary.credits_expiring_90 }}</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="panel">
+  <h2>Upcoming application deadlines (next 30 days)</h2>
+  {% if summary.upcoming_deadlines %}
+  <table class="data">
+    <thead><tr><th>Provider</th><th>Program</th><th>Deadline</th></tr></thead>
+    <tbody>
+      {% for p in summary.upcoming_deadlines %}
+      <tr>
+        <td>{{ p.provider }}</td>
+        <td><a href="/programs/{{ p.id }}">{{ p.name }}</a></td>
+        <td>{{ p.application_deadline }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="muted">No application deadlines within 30 days.</p>
+  {% endif %}
+</section>
+
+<section class="panel">
+  <h2>Program catalog status breakdown</h2>
+  <div class="chips">
+    {% for st in statuses %}
+      {% set c = summary.program_status_counts.get(st.value, 0) %}
+      {% if c > 0 %}<span class="chip">{{ st.value }} · {{ c }}</span>{% endif %}
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

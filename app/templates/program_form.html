@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% set p = program %}
+{% block title %}{{ "Edit" if p else "New" }} program — StartupOps{% endblock %}
+{% block content %}
+<h1>{{ "Edit" if p else "New" }} program (catalog)</h1>
+{% if errors %}<div class="error">Could not save: {{ errors }}</div>{% endif %}
+
+<form method="post" action="{{ form_action }}" class="form">
+  <fieldset>
+    <legend>Identity</legend>
+    <label>Provider* <input name="provider" required value="{{ p.provider if p else '' }}"></label>
+    <label>Program name* <input name="name" required value="{{ p.name if p else '' }}"></label>
+    <label>Tier
+      <select name="tier">
+        {% for t in tiers %}<option value="{{ t.value }}" {% if p and p.tier==t %}selected{% endif %}>{{ t.value }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Priority
+      <select name="priority">
+        {% for pr in priorities %}<option value="{{ pr.value }}" {% if p and p.priority==pr %}selected{% endif %}>{{ pr.value }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Benefit type
+      <select name="benefit_type">
+        {% for b in benefit_types %}<option value="{{ b.value }}" {% if p and p.benefit_type==b %}selected{% endif %}>{{ b.value }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Catalog status
+      <select name="status">
+        {% for s in statuses %}<option value="{{ s.value }}" {% if p and p.status==s %}selected{% endif %}>{{ s.value }}</option>{% endfor %}
+      </select>
+    </label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Value (advertised, marketing)</legend>
+    <label>Value disclosure (research classification)
+      <select name="value_disclosure">
+        {% for d in value_disclosures %}<option value="{{ d.value }}" {% if p and p.value_disclosure==d %}selected{% endif %}>{{ d.value }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Advertised maximum (number — ONLY when disclosure is VERIFIED)
+      <input name="advertised_maximum" type="number" step="0.01" value="{{ p.advertised_maximum if p and p.advertised_maximum is not none else '' }}"></label>
+    <label>Advertised maximum text (used when not VERIFIED, e.g. UNVERIFIED / NOT PUBLICLY DISCLOSED)
+      <input name="advertised_maximum_text" value="{{ p.advertised_maximum_text if p and p.advertised_maximum_text else '' }}"></label>
+    <label>Currency <input name="currency" value="{{ p.currency if p else 'USD' }}"></label>
+    <p class="hint">A number may only be stored when disclosure is VERIFIED. Actual awards are recorded on an application after approval — not here.</p>
+  </fieldset>
+
+  <fieldset>
+    <legend>Eligibility</legend>
+    <label>Eligibility summary <input name="eligibility_summary" value="{{ p.eligibility_summary if p and p.eligibility_summary else '' }}"></label>
+    <label class="chk"><input type="checkbox" name="referral_requirement" {% if p and p.referral_requirement %}checked{% endif %}> Referral required</label>
+    <label class="chk"><input type="checkbox" name="funding_requirement" {% if p and p.funding_requirement %}checked{% endif %}> Funding required</label>
+    <label class="chk"><input type="checkbox" name="bootstrapped_eligibility" {% if not p or p.bootstrapped_eligibility %}checked{% endif %}> Bootstrapped eligible</label>
+    <label class="chk"><input type="checkbox" name="existing_customer_eligibility" {% if not p or p.existing_customer_eligibility %}checked{% endif %}> Existing-customer eligible</label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Details & links</legend>
+    <label>Application deadline <input name="application_deadline" type="date" value="{{ p.application_deadline if p and p.application_deadline else '' }}"></label>
+    <label>Date identified <input name="date_identified" type="date" value="{{ p.date_identified if p and p.date_identified else '' }}"></label>
+    <label>Official URL <input name="official_url" value="{{ p.official_url if p and p.official_url else '' }}"></label>
+    <label>Application URL <input name="application_url" value="{{ p.application_url if p and p.application_url else '' }}"></label>
+    <label>Primary intended use <input name="primary_intended_use" value="{{ p.primary_intended_use if p and p.primary_intended_use else '' }}"></label>
+    <label>Architecture impact <input name="architecture_impact" value="{{ p.architecture_impact if p and p.architecture_impact else '' }}"></label>
+    <label>Contact <input name="contact" value="{{ p.contact if p and p.contact else '' }}"></label>
+    <label>Notes <textarea name="notes" rows="3">{{ p.notes if p and p.notes else '' }}</textarea></label>
+    <p class="hint">Do not paste passwords, API keys, tokens, or credentials — links only.</p>
+  </fieldset>
+
+  <div class="actions">
+    <button class="btn" type="submit">Save</button>
+    <a class="btn ghost" href="{{ '/programs/' ~ p.id if p else '/programs' }}">Cancel</a>
+  </div>
+</form>
+{% endblock %}

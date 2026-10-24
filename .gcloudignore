@@ -1,0 +1,14 @@
+# Keep the Cloud Build upload context minimal. Do NOT ignore app/, Dockerfile,
+# or requirements.txt — those are needed to build/run.
+.git/
+.gitignore
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+tests/
+scripts/
+*.log
+.uvicorn.*
+.fs-emu.*

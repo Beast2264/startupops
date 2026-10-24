@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Virtual environment (local only)
+.venv/
+venv/
+
+# Local env / secrets — never commit. This app stores NO secrets anyway.
+.env
+*.local
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
