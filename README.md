@@ -173,9 +173,8 @@ access, no external API calls.
 
 ## License
 
-License to be finalized by the maintainers before this repository goes
-public — check back here, or the repository's `LICENSE` file, for the final
-terms.
+StartupOps is licensed under the [MIT License](LICENSE.md).
+Copyright (c) 2026 CustodyIQ LLC.
 
 ## Contributing
 
